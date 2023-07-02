@@ -1,5 +1,15 @@
+
+"use client"
 import './globals.css'
 import { Inter } from 'next/font/google'
+
+// import chakra providers from our custom providers
+import {ChakraProvider} from "@/providers"
+import { BaseLayout } from '@/layouts'
+import TranslationProvider from '@/providers/translation'
+import { Suspense } from 'react'
+import { queryClient } from '@/lib/react-query'
+import { QueryClientProvider } from 'react-query'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +25,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <ChakraProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <QueryClientProvider
+              client={queryClient}
+          >
+            <TranslationProvider locale="en" >
+              <BaseLayout>
+                {children}
+              </BaseLayout>
+            </TranslationProvider>
+          </QueryClientProvider>
+        </Suspense>
+      </ChakraProvider>
     </html>
+    
   )
 }
